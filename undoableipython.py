@@ -2,7 +2,6 @@
 
 """
 undoableipython
-----------------------------------
 
 This module contains a replacement for the
 TerminalInteractiveShell.raw_input_original method that can be found in
@@ -28,10 +27,10 @@ def raw_input_original(prompt):
     IPython code is wrapped into comments, the rest is part of the hack.
 
     Args:
-        prompt: Prompt input from the user.
+        prompt (str): Prompt input from the user.
 
     Returns:
-        The input from the user processed.
+        str: The input from the user processed.
     """
 
     from functools import partial
@@ -103,7 +102,7 @@ def rl_is_ipython(rl_path):
     """Check if the terminal to be opened is ipython.
 
     Args:
-        rl_path: Path of interpreter being called.
+        rl_path (str): Path of interpreter being called.
     """
     return os.path.basename(rl_path) == "ipython"
 
@@ -112,7 +111,7 @@ def start_undoable_ipython(args=None):
     """Start an undoable instance of ipython.
 
     Args:
-        args: Arguments passed to the undoable instance to be started.
+        args (list): Arguments passed to the undoable instance to be started.
     """
     patch_ipython()
 

@@ -32,8 +32,9 @@ class ActualUndo(tmux.TmuxPane):
     the expected output.
 
     ActualUndo is better used within the context manager and tmux module can be
-    used to send commands:
+    used to send commands.
 
+    Example:
         with ActualUndo(80, 30) as t:
             tmux.send_command(t, "print 'hi'", prompt=expected_prompt)
             output = tmux.visible(t)
@@ -42,6 +43,7 @@ class ActualUndo(tmux.TmuxPane):
     can do that by oppening a session with the __enter__() method and
     attaching a tmux session to it.
 
+    Example:
         (in ipython)
         from test_rlundo import ActualUndo
         w = ActualUndo(50, 30).__enter__()
@@ -85,7 +87,11 @@ class IPyPrompt(object):
 
         For some reason tmux doesn't deal with formatting in the same way that
         normal ipython does, the proper ipython line for prompt is included as
-        a comment below."""
+        a comment below.
+
+        Args:
+            num (int): Prompt number.
+        """
         # return u'\x1b[34mIn [\x1b[1m{}\x1b[0;34m]:'.format(num)
         return u'\x1b[34mIn [\x1b[1m{}\x1b[0m]:'.format(num)
 
@@ -95,7 +101,11 @@ class IPyPrompt(object):
 
         For some reason tmux doesn't deal with formatting in the same way that
         normal ipython does, the proper ipython line for prompt is included as
-        a comment below."""
+        a comment below.
+
+        Args:
+            num (int): Prompt number.
+        """
         # return u'\x1b[31mOut[\x1b[1m{}\x1b[0;34m]:'.format(num)
         return u'\x1b[31mOut[\x1b[1m{}\x1b[0m]:'.format(num)
 
@@ -105,18 +115,30 @@ class IPyPrompt(object):
 
         For some reason tmux doesn't deal with formatting in the same way that
         normal ipython does, the proper ipython line for prompt is included as
-        a comment below."""
+        a comment below.
+
+        Args:
+            num (int): Prompt number.
+        """
         # return u'\x1b[34m   ...: \x1b[0m'
         return u'\x1b[34m   ...: \x1b[39m'
 
     @classmethod
     def in_prompt(cls, num):
-        """Build ipython "In" prompt without formatting."""
+        """Build ipython "In" prompt without formatting.
+
+        Args:
+            num (int): Prompt number.
+        """
         return u'In [{}]:'.format(num)
 
     @classmethod
     def out_prompt(cls, num):
-        """Build ipython "Out" prompt without formatting."""
+        """Build ipython "Out" prompt without formatting.
+
+        Args:
+            num (int): Prompt number.
+        """
         return u'Out[{}]:'.format(num)
 
     @classmethod
@@ -132,6 +154,7 @@ class TestUndoableIpythonWithTmux(unittest.TestCase):
     """
 
     # @unittest.skip("skip")
+
     def test_simple(self):
         """Test sending commands and reading formatted output with tmux."""
         with ActualUndo(80, 30) as t:
@@ -205,7 +228,8 @@ class TestUndoableIpythonWithTmux(unittest.TestCase):
             # undo again
             tmux.send_command(t, 'undo', prompt=IPyPrompt.new_l_formatted())
             output = tmux.visible_without_formatting(t)
-            self.assertEqual(output[-3:], lines[:2] + [IPyPrompt.new_l_prompt()])
+            self.assertEqual(output[-3:],
+                             lines[:2] + [IPyPrompt.new_l_prompt()])
 
 
 if __name__ == '__main__':

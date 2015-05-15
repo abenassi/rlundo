@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """
 rlundo
@@ -16,6 +17,15 @@ import undoableipython
 
 
 def start_undoable_rl(args):
+    """Start an undoable repl.
+
+    Python and IPython repls have specific modules to patch the method used to
+    catch user input. For the rest, C readline method is replaced with a
+    modified version.
+
+    Args:
+        args (list): Arguments passed to rlundo.py
+    """
 
     if undoablepython.rl_is_python(args[1]):
         commands = ["python", "undoablepython.py"] + args[2:]

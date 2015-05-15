@@ -1,6 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """
-rewrite runs a command as a subprocess, and has an api for saving
-terminal state.
+rewrite
+
+Runs a command as a subprocess, and has an api for saving terminal
+state.
 
 Opening a connection to localhost:4242 will save the current state
 Opening a connection to localhost:4243 will restore the state as it
@@ -40,25 +45,47 @@ def save():
 
 
 def count_lines(msg, width):
-    """Number of lines msg would move cursor down at a terminal width"""
+    """Number of lines msg would move cursor down at a terminal width.
+
+    Args:
+        msg (str): Input from the user.
+        width (int): Width of the terminal.
+    """
     resized_lines = [_rows_required(line, width) for line in msg.split('\n')]
     num_lines = sum(resized_lines) - 1
     return num_lines
 
 
 def _visible_characters(line):
-    """Number of characters in string without color escape characters."""
+    """Number of characters in string without color escape characters.
+
+    Args:
+        line (str): A line of user input.
+    """
     line_without_colours = re.sub("\x1b[[]0(;\d\d)?m", "", line)
     line_without_colours = line_without_colours.strip("\n")
     return len(line_without_colours)
 
 
 def _rows_required(line, width):
-    """Calculate how many rows a line will need to be printed"""
+    """Calculate how many rows a line will need to be printed.
+
+    Args:
+        line (str): A line of user input.
+        width (int): Width of the terminal.
+    """
+
     return max(0, (_visible_characters(line) - 1) // width) + 1
 
 
 def linesplit(lines, width):
+    """Resplit lines taking terminal width into account.
+
+    Args:
+        lines (list): A line of user input.
+        width (int): Width of the terminal.
+    """
+
     rows = []
     for line in lines:
         rows.extend(line[i:i + width] for i in range(0, len(line), width))

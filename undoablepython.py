@@ -1,5 +1,17 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
+"""
+undoablepython
+
+Start a python repl with undo feature, without terminal rewriting (undone
+input and output remain visible).
+
+Example:
+    $ python undoablepython.py
+"""
+
+from __future__ import unicode_literals
 import code
 import os
 import socket
@@ -10,6 +22,7 @@ from functools import partial
 # read about copy-on-write for Python processes - I feel like I've heard
 # this doesn't work well
 
+# patch input method if python 2 is being used
 py2 = False
 if sys.version_info.major == 2:
     input = raw_input
@@ -43,11 +56,15 @@ def log(msg):
 
 
 def readline(prompt):
-    """Get input from user, fork or exit
+    """Get input from user, fork or exit.
 
     readline needs function attributes:
     .on_close() should notify parent process we're undoing
-    .on_exit() should notify parent that we're exiting"""
+    .on_exit() should notify parent that we're exiting
+
+    Args:
+        prompt (str): Input from the user.
+    """
 
     log('pid %r initial call to readline' % (os.getpid()))
     while True:
@@ -111,15 +128,27 @@ class ForkUndoConsole(code.InteractiveConsole):
         raw_input(); a subclass may replace this with a different
         implementation.
 
+        Args:
+            prompt (str): Input from the user.
         """
         return readline(prompt)
 
 
 def rl_is_python(rl_path):
+    """Check if the repl called is python.
+
+    Args:
+        rl_path (str): Path where the repl executable is.
+    """
     return os.path.basename(rl_path) == "python"
 
 
 def start_undoable_python(args=None):
+    """Fork python console and start it.
+
+    Args:
+        args (list): Optional arguments to pass to the repl.
+    """
     console = ForkUndoConsole()
 
     if args:
